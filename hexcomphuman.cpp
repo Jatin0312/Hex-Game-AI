@@ -5,8 +5,8 @@
 // Now +1 on board represent black and -1 represent white
 #include <bits/stdc++.h>
 using namespace std;
-# define size 5
-int hexboard[6][6];
+# define size 9
+int hexboard[10][10];
 int win_black_flag=0;
 int win_white_flag=0;
 int count1=0;
@@ -347,7 +347,7 @@ void dfs_result_connection(int color)
 	}
 
 }
-int minmax(int depth,bool ismax,int color)
+int minmax(int depth,bool ismax,int color,int alpha,int beta)
 {
 	//cout << depth << endl;
 	/*dfs_result_connection(color);
@@ -400,11 +400,15 @@ int minmax(int depth,bool ismax,int color)
 					
 					hexboard[i][j] = color;
 					
-					best = max(best,minmax(depth-1,!ismax,color));
-					
+					best = max(best,minmax(depth-1,!ismax,color,alpha,beta));
+					alpha = max(alpha, best);
 					hexboard[i][j]=0;
+					if (beta <= alpha)
+               		 break;
 				}
 			}
+			if (beta <= alpha)
+                break;
 		}
 		return best;
 	}
@@ -420,15 +424,27 @@ int minmax(int depth,bool ismax,int color)
 				{
 
 				   	hexboard[i][j]=-1;
-				    best = min(best,minmax(depth-1,!ismax,color));
+				    best = min(best,minmax(depth-1,!ismax,color,alpha,beta));
 					hexboard[i][j]=0;
+					beta = min(beta, best);
+ 
+            // Alpha Beta Pruning
+           		 	if (beta <= alpha)
+                	break;
+					}
 				}
+				if (beta <= alpha)
+                	break;
 			}
+
+			return best;
+			
 		}
-		return best;
+		
+		
 	}
 
-}
+
 move findbestmove(int color)
 {
 	int bestval = -100;
@@ -443,7 +459,7 @@ move findbestmove(int color)
 				hexboard[i][j] = color;
 				//cout << i << " " << j << endl;
 				
-				int movval = minmax(3,false,color);
+				int movval = minmax(3,false,color,-100,100);
 				
 				hexboard[i][j]=0;
 				if(movval>bestval)

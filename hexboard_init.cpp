@@ -3,6 +3,9 @@
 // There are two players one black and one white
 // They had to reach the opposite ends
 // Now +1 on board represent black and -1 represent white
+
+
+
 #include <bits/stdc++.h>
 using namespace std;
 # define size 4
@@ -289,7 +292,7 @@ void dfs_result_connection(int color)
 	}
 
 }
-int minmax(int depth,bool ismax,int color)
+int minmax(int depth,bool ismax,int color,int alpha,int beta)
 {
 	//cout << depth << endl;
 	/*dfs_result_connection(color);
@@ -341,14 +344,21 @@ int minmax(int depth,bool ismax,int color)
 						color=-1;
 					else
 						color=1;
-					best = max(best,minmax(depth-1,!ismax,color));
+					best = max(best,minmax(depth-1,!ismax,color,alpha,beta));
 					if(color==1)
 						color=-1;
 					else
 						color=1;
 					hexboard[i][j]=0;
+					alpha = max(alpha, best);
+ 
+            // Alpha Beta Pruning
+            		if (beta <= alpha)
+               		 break;
 				}
 			}
+			if (beta <= alpha)
+               break;
 		}
 		return best;
 	}
@@ -367,14 +377,22 @@ int minmax(int depth,bool ismax,int color)
 						color=-1;
 					else
 						color=1;
-				    best = min(best,minmax(depth-1,!ismax,color));
+				    best = min(best,minmax(depth-1,!ismax,color,alpha,beta));
 				    if(color==1)
 						color=-1;
 					else
 						color=1;
 					hexboard[i][j]=0;
+					beta = min(beta, best);
+ 
+            // Alpha Beta Pruning
+           		 if (beta <= alpha)
+                	break;
 				}
+
 			}
+			if (beta <= alpha)
+                	break;
 		}
 		return best;
 	}
@@ -397,7 +415,7 @@ move findbestmove(int color)
 					color=-1;
 				else
 					color=1;
-				int movval = minmax(2,false,color);
+				int movval = minmax(2,false,color,-100,100);
 				if(color==1)
 					color=-1;
 				else
