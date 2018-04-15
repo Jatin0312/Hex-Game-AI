@@ -1,1 +1,1 @@
-# Hex-Game-AI
+# Hex-Game-AI in c++
